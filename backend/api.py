@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from typing import List, Dict
+from typing import List, Dict, Optional
 from pydantic import BaseModel
 from database import get_db, Investor, Commitment
 
@@ -19,7 +19,8 @@ class InvestorResponse(BaseModel):
 class PaginationResponse(BaseModel):
     currentPage: int
     totalPages: int
-    totalInvestors: int
+    # totalInvestors: int
+    # totalCommitments: int
 
 class InvestorsResponse(BaseModel):
     investors: List[InvestorResponse]
@@ -41,6 +42,7 @@ class InvestorCommitmentsResponse(BaseModel):
     commitments: List[CommitmentResponse]
     assetClassSummary: List[AssetClassSummary]
     totalCommitment: float
+    pagination: PaginationResponse
 
 @app.get("/api/investors", response_model=InvestorsResponse)
 def get_investors(
@@ -82,30 +84,55 @@ def get_investors(
         pagination=PaginationResponse(
             currentPage=page,
             totalPages=total_pages,
-            totalInvestors=total_investors
+            # totalInvestors=total_investors
         )
     )
 
 @app.get("/api/investors/{investor_id}/commitments", response_model=InvestorCommitmentsResponse)
-def get_investor_commitments(investor_id: int, db: Session = Depends(get_db)):
+def get_investor_commitments(
+    investor_id: int, 
+    page: int = 1, 
+    page_size: int = 10, 
+    filterByAssetClass: Optional[str] = None, 
+    db: Session = Depends(get_db)
+):
     # Fetch investor
     investor = db.query(Investor).filter(Investor.id == investor_id).first()
     if not investor:
         raise HTTPException(status_code=404, detail="Investor not found")
 
-    # Fetch commitments
-    commitments = db.query(Commitment).filter(Commitment.investor_id == investor_id).all()
+    # Base query for commitments
+    commitments_query = db.query(Commitment).filter(Commitment.investor_id == investor_id)
 
+    # Apply asset class filter if provided
+    if filterByAssetClass:
+        commitments_query = commitments_query.filter(Commitment.asset_class == filterByAssetClass)
+
+    # Calculate total commitments before pagination
+    total_commitments = commitments_query.count()
+    total_pages = (total_commitments + page_size - 1) // page_size
+
+    # Apply pagination
+    commitments = commitments_query \
+        .order_by(Commitment.id) \
+        .offset((page - 1) * page_size) \
+        .limit(page_size) \
+        .all()
+
+    # Recalculate asset class summary and total commitment without filtering
+    original_commitments_query = db.query(Commitment).filter(Commitment.investor_id == investor_id)
+    
     # Calculate total commitment
-    total_commitment = sum(commitment.amount for commitment in commitments)
+    total_commitment = original_commitments_query.with_entities(func.sum(Commitment.amount)).scalar() or 0
 
     # Generate asset class summary
-    asset_class_summary = db.query(
-        Commitment.asset_class, 
-        func.sum(Commitment.amount).label('total_amount')
-    ).filter(Commitment.investor_id == investor_id) \
-     .group_by(Commitment.asset_class) \
-     .all()
+    asset_class_summary = original_commitments_query \
+        .with_entities(
+            Commitment.asset_class, 
+            func.sum(Commitment.amount).label('total_amount')
+        ) \
+        .group_by(Commitment.asset_class) \
+        .all()
 
     return InvestorCommitmentsResponse(
         id=investor.id,
@@ -124,7 +151,12 @@ def get_investor_commitments(investor_id: int, db: Session = Depends(get_db)):
                 totalAmount=summary[1]
             ) for summary in asset_class_summary
         ],
-        totalCommitment=total_commitment
+        totalCommitment=total_commitment,
+        pagination=PaginationResponse(
+            currentPage=page,
+            totalPages=total_pages,
+            # totalCommitments=total_commitments
+        )
     )
 
 # Optional: Add CORS middleware if needed

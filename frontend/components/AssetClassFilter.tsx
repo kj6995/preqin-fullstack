@@ -5,7 +5,7 @@ export default function AssetClassFilter({ assetClasses, selectedClass, onSelect
     <div className="flex gap-2 p-4 border-b border-gray-200 overflow-x-auto">
       <Button 
         variant={selectedClass === null ? "default" : "outline"} 
-        onClick={() => onSelect(null)}
+        onClick={() => onSelect("all")}
       >
         All ({assetClasses.reduce((sum, ac) => sum + ac.totalAmount, 0).toLocaleString()})
       </Button>
