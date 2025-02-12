@@ -8,18 +8,17 @@ import { getApiUrl } from "@/config/env";
 
 export default function InvestorsPage() {
   const [investors, setInvestors] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     fetchInvestors();
-  }, [searchQuery, currentPage]);
+  }, [currentPage]);
 
   const fetchInvestors = async () => {
     try {
       const response = await axios.get(getApiUrl('/api/investors'), {
-        params: { search: searchQuery, page: currentPage },
+        params: { page: currentPage },
       });
       setInvestors(response.data.investors);
       setTotalPages(response.data.pagination.totalPages);
@@ -32,13 +31,6 @@ export default function InvestorsPage() {
     <div className="p-6">
       <Card>
         <CardContent className="p-4">
-          <Input
-            type="text"
-            placeholder="Search Investors..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="mb-4"
-          />
           <InvestorTable
             investors={investors}
             currentPage={currentPage}

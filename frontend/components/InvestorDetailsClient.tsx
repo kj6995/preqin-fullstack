@@ -19,7 +19,7 @@ export default function InvestorDetailsClient({
   const router = useRouter();
   const [investor, setInvestor] = useState(null);
   const [commitments, setCommitments] = useState([]);
-  const [selectedAssetClass, setSelectedAssetClass] = useState(null);
+  const [selectedAssetClass, setSelectedAssetClass] = useState("all");
   const [assetClassSummary, setAssetClassSummary] = useState([]);
   const [totalCommitment, setTotalCommitment] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,7 +29,7 @@ export default function InvestorDetailsClient({
   useEffect(() => {
     if (!id) return;
     setCurrentPage(1);
-    setSelectedAssetClass(null);
+    setSelectedAssetClass("all");
     fetchInvestorDetails(1, null);
   }, [id]);
 
