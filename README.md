@@ -1,46 +1,91 @@
 # Preqin Technical Interview
 
-Hello! If you are reading this, then we're in the process of chatting with you about a technical role at Preqin. Congratulations! To move forward, we'd like to know a bit about how you work. We'd like you to demonstrate your skills and abilities. 
-
-Below is a user story that reflects with work you will be doing at Preqin day to day. **We would like you to deliver what you consider to be a finished product.** Most candidates spend around 3 hours on the exercise, please do not spend more than 5 hours.
-
-You'll then showcase your work to some of our engineering team and discuss your solution. Please be prepared to share your screen, demo your app on the browser and walk us through your code.
-
-## The User Story
-
 The aim is to fulfill the following user story:
 
 ```
-As a Preqin user,
-I want to see a list of investors and the total of their commitments.
-When I select an investor,
-I want to see a breakdown of their commitments
-And be able to filter them by Asset Class.
+As a user of the system
+I want to see a list of all investors and their commitments
+So that I can understand which investors have committed to which funds
 ```
 
 Sample data is provided in `data.csv`. Assume a sole currency of GBP, and ignore any authentication needs.
 
 How you visualise the data is up to you, if you need guidance there are some optional wireframes in the repo.
 
-## Technical Requirements
+## Steps to Run this Solution
 
-The solution is completely open (you are free to use any language and frameworks).
-However we would like you to think and show knowledge of the following layers of a software system:
+### Prerequisites
+- Python 3.10
+- Node.js 16 or higher
+- npm or yarn
 
-1. Data Layer: how to store the data.
-2. Backend Services: how to provide data to consumers via a contractual API.
-3. Web applications: how to consume and visualize data from API services on the web.
- 
-Ideally you should demonstrate knowledge of some of the tech stack used across our teams, which includes:
+### Backend Setup
 
-- React micro frontends (newer ones with typescript, older ones without),
-- Python micro services (some using REST/FastAPI others using GQL/Strawberry), 
-- C#/.NET backend APIs
-- Postgres, MSSQL and Mongo databases (`SQLite` is a quick and easy way to include a database as a file with your code)
+1. Navigate to the backend directory:
+```bash
+cd backend
+```
 
-## Submitting your solution
+2. Create and activate a virtual environment:
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows use: venv\Scripts\activate
+```
 
-Please submit your solution by sharing a public github or bitbucket with your code with the recruiter.
-We ask you do not fork or PR against the Preqin repository.
+3. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
 
-Thank you and good luck!
+4. Import the data from the csv file:
+```bash
+python import_data.py
+```
+
+5. Start the backend server:
+```bash
+uvicorn api:app --reload --port 8000
+```
+
+The backend will be running at http://localhost:8000
+
+### Frontend Setup
+
+1. Navigate to the frontend directory:
+```bash
+cd frontend
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Start the development server:
+```bash
+npm run dev
+```
+
+The frontend will be running at http://localhost:3000
+
+### Features
+- View list of investors with pagination
+- Click on an investor to see their commitments
+- Filter commitments by asset class
+- Navigate back to the main list
+- Responsive design that works on both desktop and mobile
+
+### API Endpoints
+- GET `/api/investors` - List all investors with pagination
+- GET `/api/investors/{id}/commitments` - Get investor details and commitments with filtering and pagination
+
+### Tech Stack
+- Backend:
+  - FastAPI (Python)
+  - SQLite Database
+  - SQLAlchemy ORM
+- Frontend:
+  - Next.js 13+
+  - TypeScript
+  - Tailwind CSS
+  - Shadcn UI Components
