@@ -1,7 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 import InvestorDetails from "@/components/InvestorDetails";
 import AssetClassFilter from "@/components/AssetClassFilter";
 import { getApiUrl } from "@/config/env";
@@ -13,6 +16,7 @@ interface InvestorDetailsClientProps {
 export default function InvestorDetailsClient({
   id,
 }: InvestorDetailsClientProps) {
+  const router = useRouter();
   const [investor, setInvestor] = useState(null);
   const [commitments, setCommitments] = useState([]);
   const [selectedAssetClass, setSelectedAssetClass] = useState(null);
@@ -32,7 +36,6 @@ export default function InvestorDetailsClient({
   // Handle pagination and filter changes
   useEffect(() => {
     if (!id) return;
-    // Skip the initial fetch as it's handled by the first effect
     if (currentPage === 1 && !selectedAssetClass) return;
     if (selectedAssetClass === "all") {
       fetchInvestorDetails(currentPage, null);
@@ -75,7 +78,17 @@ export default function InvestorDetailsClient({
     <div className="p-6">
       <Card>
         <CardContent className="p-4">
-          <h1 className="text-xl font-bold mb-4">Investor: {investor}</h1>
+          <div className="flex items-center gap-4 mb-4">
+            <Button 
+              variant="outline" 
+              size="icon"
+              onClick={() => router.push("/")}
+              className="h-8 w-8"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <h1 className="text-xl font-bold">Investor: {investor}</h1>
+          </div>
           <AssetClassFilter
             assetClasses={assetClassSummary}
             selectedAssetClass={selectedAssetClass}
