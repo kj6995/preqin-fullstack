@@ -28,7 +28,12 @@ export default function InvestorsPage() {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 space-y-6">
+      <div className="text-center mb-20">
+        <h1 className="text-3xl font-bold text-gray-900">Preqin</h1>
+        <p className="text-gray-700">List of all the investors and their commitments.</p>
+        <p className="text-gray-500">Click on any row to see further details.</p>
+      </div>
       <Card>
         <CardContent className="p-4">
           <InvestorTable
