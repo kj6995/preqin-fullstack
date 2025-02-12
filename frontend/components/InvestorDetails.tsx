@@ -1,5 +1,12 @@
-"use client"
-import { Table, TableHead, TableRow, TableHeader, TableBody, TableCell } from "@/components/ui/table";
+"use client";
+import {
+  Table,
+  TableHead,
+  TableRow,
+  TableHeader,
+  TableBody,
+  TableCell,
+} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 
 interface Commitment {
@@ -13,19 +20,19 @@ interface InvestorDetailsProps {
   commitments: Commitment[];
   currentPage: number;
   totalPages: number;
-  totalCommitments: number;
   onPageChange: (page: number) => void;
 }
 
-export default function InvestorDetails({ 
-  commitments, 
-  currentPage, 
-  totalPages, 
-  totalCommitments,
-  onPageChange 
+export default function InvestorDetails({
+  commitments,
+  currentPage,
+  totalPages,
+  onPageChange,
 }: InvestorDetailsProps) {
   if (!commitments || commitments.length === 0) {
-    return <p className="text-center text-gray-500">No commitments available.</p>;
+    return (
+      <p className="text-center text-gray-500">No commitments available.</p>
+    );
   }
 
   return (
@@ -50,24 +57,21 @@ export default function InvestorDetails({
           ))}
         </TableBody>
       </Table>
-      
+
       <div className="flex justify-between items-center mt-4">
-        <Button 
-          variant="outline" 
-          onClick={() => onPageChange(currentPage - 1)} 
+        <Button
+          variant="outline"
+          onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
         >
           Previous
         </Button>
         <span>
-          Page {currentPage} of {totalPages} 
-          <span className="ml-2 text-gray-500">
-            (Total {totalCommitments} commitments)
-          </span>
+          Page {currentPage} of {totalPages}
         </span>
-        <Button 
-          variant="outline" 
-          onClick={() => onPageChange(currentPage + 1)} 
+        <Button
+          variant="outline"
+          onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
         >
           Next

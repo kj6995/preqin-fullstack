@@ -20,7 +20,6 @@ export default function InvestorDetailsClient({
   const [totalCommitment, setTotalCommitment] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [totalCommitments, setTotalCommitments] = useState(0);
 
   // Initial data fetch when id changes
   useEffect(() => {
@@ -62,7 +61,6 @@ export default function InvestorDetailsClient({
       setAssetClassSummary(response.data.assetClassSummary);
       setTotalCommitment(response.data.totalCommitment);
       setTotalPages(response.data.pagination.totalPages);
-      setTotalCommitments(response.data.pagination.totalCommitments);
     } catch (error) {
       console.error("Error fetching investor details:", error);
     }
@@ -80,7 +78,6 @@ export default function InvestorDetailsClient({
           <h1 className="text-xl font-bold mb-4">Investor: {investor}</h1>
           <AssetClassFilter
             assetClasses={assetClassSummary}
-            totalCommitment={totalCommitment}
             selectedAssetClass={selectedAssetClass}
             onSelect={handleAssetClassChange}
           />
@@ -88,7 +85,6 @@ export default function InvestorDetailsClient({
             commitments={commitments}
             currentPage={currentPage}
             totalPages={totalPages}
-            totalCommitments={totalCommitments}
             onPageChange={setCurrentPage}
           />
         </CardContent>

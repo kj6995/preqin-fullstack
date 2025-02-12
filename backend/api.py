@@ -19,8 +19,6 @@ class InvestorResponse(BaseModel):
 class PaginationResponse(BaseModel):
     currentPage: int
     totalPages: int
-    # totalInvestors: int
-    # totalCommitments: int
 
 class InvestorsResponse(BaseModel):
     investors: List[InvestorResponse]
@@ -84,7 +82,6 @@ def get_investors(
         pagination=PaginationResponse(
             currentPage=page,
             totalPages=total_pages,
-            # totalInvestors=total_investors
         )
     )
 
@@ -155,7 +152,6 @@ def get_investor_commitments(
         pagination=PaginationResponse(
             currentPage=page,
             totalPages=total_pages,
-            # totalCommitments=total_commitments
         )
     )
 
